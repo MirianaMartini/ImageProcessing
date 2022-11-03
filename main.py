@@ -174,8 +174,9 @@ def main():
             myGesture = findGesture(unknownGesture, knownGestures, keyPoints, gestNames, tol)
             text = myGesture
             #text = "None"
-            cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
-            cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
+            #cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
+            #cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
+            cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
 
         fpsShow(img, pTime) #Show fps number
 
