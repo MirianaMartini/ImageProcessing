@@ -11,7 +11,7 @@ import time
 
 
 class handDetector():
-    def __init__(self, mode=False, maxHands=2, detectionCon=0.5, trackCon=0.5):
+    def __init__(self, mode=False, maxHands=1, detectionCon=0.5, trackCon=0.5):
         self.mode = mode
         self.maxHands = maxHands
         self.detectionCon = detectionCon
@@ -24,12 +24,16 @@ class handDetector():
     def findHands(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
-        # print(results.multi_hand_landmarks)
 
-        if self.results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks: #se ha trovato una mano
             for handLms in self.results.multi_hand_landmarks:
-                if draw:
-                    self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
+                for idx, classification in enumerate(self.results.multi_handedness):
+                    if classification.classification[0].label == 'Right': #ritorna img e settare errore in moda da visualizzare il messaggio "togli la mano destra"
+                        print("errore MANO DESTRA")
+                    if classification.classification[0].label == 'Left': #ritorna img e nessun errore
+                        print("MANO SINISTRA --> OK")
+                        if draw:
+                            self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
         return img
 
     def findPosition(self, img, handNo=0, draw=True):
