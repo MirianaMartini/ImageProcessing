@@ -5,7 +5,7 @@ import numpy as np
 
 class mpHands:
     import mediapipe as mp
-    def __init__(self,maxHands=2,tol1=.5,tol2=.5):
+    def __init__(self,maxHands=2,tol1=1,tol2=1):
         self.hands=self.mp.solutions.hands.Hands(False,maxHands,tol1,tol2)
     def Marks(self,frame):
         myHands=[]
@@ -33,6 +33,7 @@ def findError(gestureMatrix,unknownMatrix,keyPoints):
             error=error+abs(gestureMatrix[row][column]-unknownMatrix[row][column])
     print(error)
     return error
+
 def findGesture(unknownGesture,knownGestures,keyPoints,gestNames,tol):
     errorArray=[]
     for i in range(0,len(gestNames),1):
@@ -53,7 +54,7 @@ def findGesture(unknownGesture,knownGestures,keyPoints,gestNames,tol):
 
 width=1280
 height=720
-cam=cv2.VideoCapture(4,cv2.CAP_DSHOW)
+cam=cv2.VideoCapture(0,cv2.CAP_DSHOW)
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
 cam.set(cv2.CAP_PROP_FPS, 30)
