@@ -144,7 +144,7 @@ def fpsShow(img, pTime):
     fps = 1 / (cTime - pTime)
     pTime = cTime
 
-    cv2.putText(img, f'FPS: {int(fps)}', (400, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+    cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
 
 def main():
     wCam, hCam = 640, 480
@@ -162,11 +162,12 @@ def main():
         success, img = cap.read()
         img = cv2.flip(img, 1)
         img = detector.findHands(img)
+        RightHand = detector.RightHand(img) #False= Left Hand; True=Right Hand
         lmList = detector.findPosition(img, draw=False)
         # print(lmList)
 
 
-        if len(lmList) != 0: #if a hand is detected
+        if len(lmList) != 0 and RightHand==False: #if a hand is detected
             unknownGesture = findDistances(lmList)
             #if (flag):
             #    print(unknownGesture)
@@ -177,6 +178,9 @@ def main():
             #cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
             #cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
             cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
+
+        if RightHand==True:
+            cv2.putText(img, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2, cv2.LINE_AA)
 
         fpsShow(img, pTime) #Show fps number
 

@@ -5,7 +5,7 @@ import numpy as np
 
 class mpHands:
     import mediapipe as mp
-    def __init__(self,maxHands=2,tol1=1,tol2=1):
+    def __init__(self,maxHands=2,tol1=.5,tol2=.5):
         self.hands=self.mp.solutions.hands.Hands(False,maxHands,tol1,tol2)
     def Marks(self,frame):
         myHands=[]

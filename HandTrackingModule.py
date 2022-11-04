@@ -21,20 +21,29 @@ class handDetector():
         self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.detectionCon, self.trackCon)
         self.mpDraw = mp.solutions.drawing_utils
 
-    def findHands(self, img, draw=True):
+    def findHands(self, img):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
 
         if self.results.multi_hand_landmarks: #se ha trovato una mano
             for handLms in self.results.multi_hand_landmarks:
                 for idx, classification in enumerate(self.results.multi_handedness):
-                    if classification.classification[0].label == 'Right': #ritorna img e settare errore in moda da visualizzare il messaggio "togli la mano destra"
-                        print("errore MANO DESTRA")
-                    if classification.classification[0].label == 'Left': #ritorna img e nessun errore
-                        print("MANO SINISTRA --> OK")
-                        if draw:
-                            self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
+                    if classification.classification[0].label == 'Left': #Se ha individuato la mano Sinistra
+                        self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
         return img
+
+    def RightHand (self, img):
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.results = self.hands.process(imgRGB)
+        error = None
+
+        if self.results.multi_handedness:  # se ha trovato una mano
+            for idx, classification in enumerate(self.results.multi_handedness):
+                if classification.classification[0].label == 'Right':  # Mando Destra --> errore
+                    error=True
+                if classification.classification[0].label == 'Left':  # Mano Sinistra --> ok
+                    error=False
+        return error
 
     def findPosition(self, img, handNo=0, draw=True):
 
