@@ -78,6 +78,7 @@ def StoreGestures(_letter):
     while cap.isOpened():
         success, img = cap.read()
         img = cv2.flip(img, 1)
+
         img = detector.findHands(img)
         RightHand = detector.RightHand(img)  # False = Left Hand;   True = Right Hand
         lmList = detector.findPosition(img, draw=False)

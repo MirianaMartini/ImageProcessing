@@ -32,7 +32,7 @@ class handDetector():
                         self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
         return img
 
-    def RightHand (self, img):
+    def RightHand(self, img):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
         error = None
@@ -40,9 +40,9 @@ class handDetector():
         if self.results.multi_handedness:  # se ha trovato una mano
             for idx, classification in enumerate(self.results.multi_handedness):
                 if classification.classification[0].label == 'Right':  # Mando Destra --> errore
-                    error=True
+                    error = True
                 if classification.classification[0].label == 'Left':  # Mano Sinistra --> ok
-                    error=False
+                    error = False
         return error
 
     def findPosition(self, img, handNo=0, draw=True):
