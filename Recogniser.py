@@ -3,7 +3,6 @@ import time
 import numpy as np
 import os
 import json
-from threading import Thread
 import HandTrackingModule as htm
 import matplotlib.pyplot as plt
 
@@ -107,7 +106,7 @@ def handle_close(event, cap):
 
 def grab_frame(cap, detector, gestNames, knownGestures, pTime):
     """
-    Method to grab a frame from the camera
+    Method to grab a frame from the camera and elaborate it in order to detect the hand and signs
     :param cap: the VideoCapture object
     :return: the captured image
     """
