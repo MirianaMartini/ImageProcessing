@@ -52,6 +52,23 @@ def fpsShow(img, pTime):
     cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
     return cTime
 
+def bgr_to_rgb(image):
+    """
+    Convert a BGR image into RBG
+    :param image: the BGR image
+    :return: the same image but in RGB
+    """
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+
+def handle_close(event, cap):
+    """
+    Handle the close event of the Matplotlib window by closing the camera capture
+    :param event: the close event
+    :param cap: the VideoCapture object to be closed
+    """
+    cap.release()
+
 
 def startC():
     prompt = 'Press S when Ready --> '
@@ -64,10 +81,27 @@ def startC():
 
 
 def StoreGestures(_letter):
-    unknownGestureSamples = []
-    cap = cv2.VideoCapture(0)
     pTime = 0
+
+    # init the camera
+    cap = cv2.VideoCapture(0)
+
+    # enable Matplotlib interactive mode
+    plt.ion()
+
+    # create a figure to be updated
+    fig = plt.figure()
+    # intercept the window's close event to call the handle_close() function
+    fig.canvas.mpl_connect("close_event", lambda event: handle_close(event, cap))
+
+    # prep a variable for the first run
+    img = None
+
+    # prep detector + init unknownGestureSamples list
     detector = htm.handDetector(detectionCon=1)
+    unknownGestureSamples = []
+
+    # flags
     i = 0
     averageFlag = True
 
@@ -76,19 +110,19 @@ def StoreGestures(_letter):
     t.start()
 
     while cap.isOpened():
-        success, img = cap.read()
-        img = cv2.flip(img, 1)
+        success, frame = cap.read()
+        frame = cv2.flip(frame, 1)
 
-        img = detector.findHands(img)
-        RightHand = detector.RightHand(img)  # False = Left Hand;   True = Right Hand
-        lmList = detector.findPosition(img, draw=False)
+        frame = detector.findHands(frame)
+        RightHand = detector.RightHand(frame)  # False = Left Hand;   True = Right Hand
+        lmList = detector.findPosition(frame, draw=False)
         # print(lmList)
 
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(img, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3,
-                                cv2.LINE_AA)
+                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125),
+                                3, cv2.LINE_AA)
                     unknownGestureSample = findDistances(lmList)  # save the sample
                     unknownGestureSamples.append(unknownGestureSample)  # add the sample to the list of samples
                     i = i + 1
@@ -101,17 +135,25 @@ def StoreGestures(_letter):
                         return
 
         elif RightHand is True:
-            cv2.putText(img, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
+            cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
                         cv2.LINE_AA)
 
-        pTime = fpsShow(img, pTime)  # Show fps number
+        # frame, pTime = fpsShow(frame, pTime)  # Show fps number
 
-        cv2.imshow("Image", img)
-        cv2.waitKey(1)
-
-    cv2.destroyAllWindows()
-    cap.release()
-
+        if img is None:
+            # convert it in RBG (for Matplotlib)
+            img = plt.imshow(bgr_to_rgb(frame))
+            plt.axis("off")  # hide axis, ticks, ...
+            plt.title("Store Gestures")
+            # show the plot!
+            plt.show()
+        else:
+            # set the current frame as the data to show
+            img.set_data(bgr_to_rgb(frame))
+            # update the figure associated to the shown plot
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+            plt.pause(1 / 30)
 
 if __name__ == "__main__":
     try:
