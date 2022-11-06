@@ -4,6 +4,7 @@ import numpy as np
 import os
 import json
 import HandTrackingModule as htm
+import FingersUpDownDetector as fUDd
 import matplotlib.pyplot as plt
 
 tipIds = [4, 8, 12, 16, 20]
@@ -21,6 +22,35 @@ def findDistances(lmList): # calculates, for each node, its distance with all th
         for column in range(0, len(lmList)):
             distMatrix[row][column] = (((lmList[row][1]-lmList[column][1])**2+(lmList[row][2]-lmList[column][2])**2)**(1./2.))/palmSize
     return distMatrix
+
+
+def findGestureNew(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+    # unknown gesture: gesture detected from webcam
+    # knownGestures: array of all the gesture for each letter
+    # keyPoints: all the key id of the hand
+    # gestNames: array of all the Letters Names
+    # tol: constant for error
+    gesture = 'Unknown'
+
+    errorArray = []
+    # For each gestName he finds the error between the gesture related to that Name and
+    # the real time detected gesture
+    for i in range(0, len(gestNames), 1):
+        error = findError(knownGestures[i], unknownGesture, keyPoints)
+        errorArray.append(error)
+    errorMin = errorArray[0]
+    minIndex = 0
+
+    # finds a group of candidates
+    candidates = []
+    for i in range(0, len(errorArray), 1):
+        if errorArray[i] < tol:
+            candidates.append(errorArray[i])
+
+    if len(candidates) == 0:
+        gesture = 'Unknown'
+
+    return gesture
 
 
 def findGesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
@@ -119,10 +149,12 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
     if len(lmList) != 0 and RightHand is False:  # if a hand is detected
         unknownGesture = findDistances(lmList)
         myGesture = findGesture(unknownGesture, knownGestures, keyPoints, gestNames, tol)
+        fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
         text = myGesture
         # cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
         # cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
         cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
+        cv2.putText(img, fingers_names, (0, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
 
     if RightHand is True:
         cv2.putText(img, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2, cv2.LINE_AA)
