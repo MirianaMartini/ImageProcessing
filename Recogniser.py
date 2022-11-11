@@ -8,8 +8,9 @@ import FingersUpDownDetector as fUDd
 import matplotlib.pyplot as plt
 
 tipIds = [4, 8, 12, 16, 20]
-keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
-tol = 15
+keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
+#keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
+tol = 20
 
 # ha forti difficoltà a riconoscere: m, n,
 # si confonde tra: r, u e v / t, x / c_circonflesso, o, p (quest'ultimi più raramente)

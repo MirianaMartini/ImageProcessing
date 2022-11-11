@@ -170,7 +170,7 @@ def store_gestures(_letter):
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125),
+                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
                                 3, cv2.LINE_AA)
                     unknown_gesture_sample = find_distances(lmList)  # save the sample
                     unknown_gesture_samples.append(unknown_gesture_sample)  # add the sample to the list of samples
@@ -245,7 +245,7 @@ def store_gestures_module(_letter):
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125),
+                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125),
                                 3, cv2.LINE_AA)
                     unknown_gesture_sample = find_distances_module(lmList)  # save the sample
                     unknown_gesture_samples.append(unknown_gesture_sample)  # add the sample to the list of samples
@@ -259,7 +259,7 @@ def store_gestures_module(_letter):
                         return
 
         elif RightHand is True:
-            cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
+            cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125), 2,
                         cv2.LINE_AA)
 
         # frame, pTime = fps_show(frame, pTime)  # Show fps number
