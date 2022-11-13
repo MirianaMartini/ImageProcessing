@@ -6,6 +6,7 @@ import json
 import HandTrackingModule as htm
 import FingersUpDownDetector as fUDd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
@@ -246,6 +247,7 @@ def main():
     # enable Matplotlib interactive mode
     plt.ion()
 
+    mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
     # intercept the window's close event to call the handle_close() function
