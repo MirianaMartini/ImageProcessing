@@ -6,6 +6,7 @@ import HandTrackingModule as htm
 import json
 import os
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 samples = 100
 start = False
@@ -132,6 +133,8 @@ def start_c():
 def store_gestures(_letter):
     pTime = 0
 
+    mpl.use('TkAgg')
+
     # init the camera
     cap = cv2.VideoCapture(0)
 
@@ -206,6 +209,8 @@ def store_gestures(_letter):
 
 def store_gestures_module(_letter):
     pTime = 0
+
+    mpl.use('TkAgg')
 
     # init the camera
     cap = cv2.VideoCapture(0)

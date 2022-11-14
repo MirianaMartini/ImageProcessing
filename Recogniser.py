@@ -12,6 +12,7 @@ tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 #keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
 tol = 20
+tolMN = 35
 
 # ha forti difficoltà a riconoscere: m, n,
 # si confonde tra: r, u e v / t, x / c_circonflesso, o, p (quest'ultimi più raramente)
@@ -93,10 +94,14 @@ def find_gesture_module(unknownGesture, knownGestures, keyPoints, gestNames, tol
         if errorArray[i] < errorMin:
             errorMin = errorArray[i]
             minIndex = i
-    if errorMin < tol:
-        gesture = gestNames[minIndex]
-    if errorMin >= tol:
-        gesture = 'Unknown'
+    if errorMin < tolMN:
+        if gestNames[minIndex] == 'M' or gestNames[minIndex] == 'N':
+            gesture = gestNames[minIndex]
+            print(gestNames[minIndex])
+        elif errorMin < tol:
+            gesture = gestNames[minIndex]
+        elif errorMin >= tol:
+            gesture = 'Unknown'
     return gesture
 
 
