@@ -218,6 +218,7 @@ def store_gestures_module(_letter):
     # enable Matplotlib interactive mode
     plt.ion()
 
+    mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
     # intercept the window's close event to call the handle_close() function

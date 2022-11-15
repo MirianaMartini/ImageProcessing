@@ -14,10 +14,6 @@ keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 tol = 20
 tolMN = 35
 
-# ha forti difficoltà a riconoscere: m, n,
-# si confonde tra: r, u e v / t, x / c_circonflesso, o, p (quest'ultimi più raramente)
-
-
 def find_distances(lmList):
     # calculates, for each node, its signed distance along x and y with all the 21 nodes (with itself too and it's 0)
     distMatrix = []
@@ -33,7 +29,6 @@ def find_distances(lmList):
     distMatrix = [dist_matrix_x, dist_matrix_y]
     return distMatrix
 
-
 def find_distances_module(lmList): # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
     distMatrix = np.zeros([len(lmList), len(lmList)], dtype='float')
     palmSize = ((lmList[0][1]-lmList[9][1])**2+(lmList[0][2]-lmList[9][2])**2)**(1./2.)
@@ -41,7 +36,6 @@ def find_distances_module(lmList): # calculates, for each node, its distance wit
         for column in range(0, len(lmList)):
             distMatrix[row][column] = (((lmList[row][1]-lmList[column][1])**2+(lmList[row][2]-lmList[column][2])**2)**(1./2.))/palmSize
     return distMatrix
-
 
 def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
     # unknown gesture: gesture detected from webcam
@@ -70,7 +64,6 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
     if errorMin >= tol:
         gesture = 'Unknown'
     return gesture
-
 
 def find_gesture_module(unknownGesture, knownGestures, keyPoints, gestNames, tol):
     # unknown gesture: gesture detected from webcam
@@ -104,7 +97,6 @@ def find_gesture_module(unknownGesture, knownGestures, keyPoints, gestNames, tol
             gesture = 'Unknown'
     return gesture
 
-
 def find_error(gestureMatrix, unknownMatrix, keyPoints):
     errorX = 0
     errorY = 0
@@ -117,7 +109,6 @@ def find_error(gestureMatrix, unknownMatrix, keyPoints):
     error = [errorX, errorY]
     return error
 
-
 def find_error_module(gestureMatrix, unknownMatrix, keyPoints):
     error = 0
     for row in keyPoints:
@@ -125,18 +116,15 @@ def find_error_module(gestureMatrix, unknownMatrix, keyPoints):
             error = error + abs(gestureMatrix[row][column] - unknownMatrix[row][column])
     return error
 
-
 def fps_show(img, pTime):
     cTime = time.time()
     fps = 1 / (cTime - pTime)
     cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
     return img, cTime
 
-
 def get_letter(fileName):
     x = fileName.split('.')
     return x[0]
-
 
 def get_known_gestures(path):
     gesturesList = []
@@ -151,7 +139,6 @@ def get_known_gestures(path):
             outfile.close()
     return namesList, gesturesList  # np.array(gesturesList)
 
-
 def get_known_gestures_module(path):
     gesturesList = []
     namesList = []
@@ -165,7 +152,6 @@ def get_known_gestures_module(path):
             outfile.close()
     return namesList, gesturesList  # np.array(gesturesList)
 
-
 def bgr_to_rgb(image):
     """
     Convert a BGR image into RBG
@@ -174,7 +160,6 @@ def bgr_to_rgb(image):
     """
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-
 def handle_close(event, cap):
     """
     Handle the close event of the Matplotlib window by closing the camera capture
@@ -182,7 +167,6 @@ def handle_close(event, cap):
     :param cap: the VideoCapture object to be closed
     """
     cap.release()
-
 
 def grab_frame_module(cap, detector, gestNames, knownGestures, pTime):
     """
@@ -200,11 +184,16 @@ def grab_frame_module(cap, detector, gestNames, knownGestures, pTime):
         unknownGesture = find_distances_module(lmList)
         myGesture = find_gesture_module(unknownGesture, knownGestures, keyPoints, gestNames, tol)
         fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
-        text = myGesture
-        # cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
-        # cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
-        cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
-        cv2.putText(img, fingers_names, (0, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
+        orientation = detector.orientation(img)
+        if orientation is True:
+            text = myGesture
+            # cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
+            # cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
+            cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
+            cv2.putText(img, fingers_names, (0, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
+        else:
+            cv2.putText(img, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2, cv2.LINE_AA)
+
 
     if RightHand is True:
         cv2.putText(img, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2, cv2.LINE_AA)
@@ -241,7 +230,6 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
     # img, pTime = fps_show(img, pTime)  # Show fps number
 
     return img, pTime
-
 
 def main():
     pTime = 0

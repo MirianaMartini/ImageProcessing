@@ -4,9 +4,9 @@ By: Murtaza Hassan
 Youtube: http://www.youtube.com/c/MurtazasWorkshopRoboticsandAI
 Website: https://www.computervision.zone
 """
-
 import cv2
 import mediapipe as mp
+import numpy as np
 import time
 
 
@@ -61,6 +61,28 @@ class handDetector():
 
         return lmList
 
+    def orientation(self, img):
+        if self.results.multi_handedness:  # se ha trovato una mano
+            flag = False
+            for hand in self.results.multi_hand_landmarks:
+                if hand.landmark[0].y > hand.landmark[1].y and hand.landmark[0].y > hand.landmark[17].y:
+                    flag = True
+                else:
+                    flag = False
+                """"
+                elif hand.landmark[0].y < hand.landmark[1].y and hand.landmark[0].y < hand.landmark[17].y:
+                    flag = False
+                    print("mano rivolta verso il basso")
+                elif hand.landmark[17].y < hand.landmark[0].y and hand.landmark[1].y > hand.landmark[0].y:
+                    flag = False
+                    print("mano rivolta verso destra")
+                elif hand.landmark[17].y > hand.landmark[0].y and hand.landmark[1].y < hand.landmark[0].y:
+                    flag = False
+                    print("mano rivolta verso sinistra")
+                """
+            return flag
+
+
 
 def main():
     pTime = 0
@@ -82,7 +104,6 @@ def main():
 
         cv2.imshow("Image", img)
         cv2.waitKey(1)
-
 
 if __name__ == "__main__":
     main()
