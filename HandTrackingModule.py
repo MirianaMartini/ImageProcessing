@@ -61,7 +61,7 @@ class handDetector():
 
         return lmList
 
-    def orientation(self, img):
+    def orientation(self):
         if self.results.multi_handedness:  # se ha trovato una mano
             flag = False
             for hand in self.results.multi_hand_landmarks:

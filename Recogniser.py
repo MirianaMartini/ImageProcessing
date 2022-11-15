@@ -184,7 +184,7 @@ def grab_frame_module(cap, detector, gestNames, knownGestures, pTime):
         unknownGesture = find_distances_module(lmList)
         myGesture = find_gesture_module(unknownGesture, knownGestures, keyPoints, gestNames, tol)
         fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
-        orientation = detector.orientation(img)
+        orientation = detector.orientation()
         if orientation is True:
             text = myGesture
             # cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
