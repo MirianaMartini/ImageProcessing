@@ -65,8 +65,15 @@ class handDetector():
         if self.results.multi_handedness:  # se ha trovato una mano
             flag = False
             for hand in self.results.multi_hand_landmarks:
+                cos_right = (hand.landmark[17].x-hand.landmark[0].x)**2/((hand.landmark[17].x-hand.landmark[0].x)**2
+                                                                         + (hand.landmark[17].y-hand.landmark[0].y)**2)
+                cos_left = (hand.landmark[0].x - hand.landmark[1].x) ** 2/((hand.landmark[0].x-hand.landmark[1].x)**2
+                                                                           + (hand.landmark[1].y-hand.landmark[0].y)**2)
                 if hand.landmark[0].y > hand.landmark[1].y and hand.landmark[0].y > hand.landmark[17].y:
-                    flag = True
+                    if (0 <= cos_right <= 0.3) and (0 <= cos_left <= 0.8):
+                        flag = True
+                    else:
+                        flag = False
                 else:
                     flag = False
                 """"
