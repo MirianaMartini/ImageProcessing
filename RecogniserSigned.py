@@ -10,17 +10,21 @@ import matplotlib as mpl
 
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
-#keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
-tol = 20
-tolMN = 35
+tol = 130
 
 
-def find_distances(lmList): # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
-    distMatrix = np.zeros([len(lmList), len(lmList)], dtype='float')
-    palmSize = ((lmList[0][1]-lmList[9][1])**2+(lmList[0][2]-lmList[9][2])**2)**(1./2.)
+def find_distances(lmList):
+    # calculates, for each node, its signed distance along x and y with all the 21 nodes (with itself too and it's 0)
+    dist_matrix_x = np.zeros([len(lmList), len(lmList)], dtype='float')
+    dist_matrix_y = np.zeros([len(lmList), len(lmList)], dtype='float')
+    palmSize = ((lmList[0][1] - lmList[9][1]) ** 2 + (lmList[0][2] - lmList[9][2]) ** 2) ** (1. / 2.)
+
     for row in range(0, len(lmList)):
         for column in range(0, len(lmList)):
-            distMatrix[row][column] = (((lmList[row][1]-lmList[column][1])**2+(lmList[row][2]-lmList[column][2])**2)**(1./2.))/palmSize
+            dist_matrix_x[row][column] = (lmList[row][1] - lmList[column][1])/palmSize
+            dist_matrix_y[row][column] = (lmList[row][2] - lmList[column][2])/palmSize
+
+    distMatrix = [dist_matrix_x, dist_matrix_y]
     return distMatrix
 
 
@@ -43,21 +47,26 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
 
     # finds the min in error array
     for i in range(0, len(errorArray), 1):
-        if errorArray[i] < errorMin:
+        if errorArray[i][0] < errorMin[0] and errorArray[i][1] < errorMin[1]:
             errorMin = errorArray[i]
             minIndex = i
-    if errorMin < tol:
+    if errorMin[0] <= tol and errorMin[1] <= tol:
         gesture = gestNames[minIndex]
-    if errorMin >= tol:
+    if errorMin[0] >= tol and errorMin[1] >= tol:
         gesture = 'Unknown'
     return gesture
 
 
 def find_error(gestureMatrix, unknownMatrix, keyPoints):
-    error = 0
+    errorX = 0
+    errorY = 0
+
     for row in keyPoints:
         for column in keyPoints:
-            error = error + abs(gestureMatrix[row][column] - unknownMatrix[row][column])
+            errorX = errorX + abs(gestureMatrix[0][row][column] - unknownMatrix[0][row][column])
+            errorY = errorY + abs(gestureMatrix[1][row][column] - unknownMatrix[1][row][column])
+
+    error = [errorX, errorY]
     return error
 
 
@@ -159,7 +168,7 @@ def main():
 
     # prep detector + load known gestures
     detector = htm.handDetector(detectionCon=1)
-    gestNames, knownGestures = get_known_gestures("GesturesFiles/")
+    gestNames, knownGestures = get_known_gestures("GesturesFilesSigned/")
 
     while cap.isOpened():
         # get the current frame
