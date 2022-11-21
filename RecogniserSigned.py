@@ -122,9 +122,9 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
     """
     success, img = cap.read()
     img = cv2.flip(img, 1)
-    img = detector.findHands(img)
-    RightHand = detector.RightHand(img)  # False = Left Hand; True = Right Hand
-    lmList = detector.findPosition(img, draw=False)
+    img = detector.find_hands(img)
+    RightHand = detector.right_hand(img)  # False = Left Hand; True = Right Hand
+    lmList = detector.find_position(img, draw=False)
 
     if len(lmList) != 0 and RightHand is False:  # if a hand is detected
         unknownGesture = find_distances(lmList)
@@ -167,7 +167,7 @@ def main():
     img = None
 
     # prep detector + load known gestures
-    detector = htm.handDetector(detectionCon=1)
+    detector = htm.HandDetector()
     gestNames, knownGestures = get_known_gestures("GesturesFilesSigned/")
 
     while cap.isOpened():

@@ -4,13 +4,13 @@ import numpy as np
 from threading import Thread
 import HandTrackingModule as htm
 import json
-import os
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 samples = 100
 start = False
 path = "GesturesFiles/"
+
 
 def find_distances(lmList):
     # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
@@ -102,7 +102,7 @@ def store_gestures(_letter):
     img = None
 
     # prep detector + init unknownGestureSamples list
-    detector = htm.handDetector(detectionCon=1)
+    detector = htm.HandDetector()
     unknown_gesture_samples = []
 
     # flags
@@ -117,10 +117,9 @@ def store_gestures(_letter):
         success, frame = cap.read()
         frame = cv2.flip(frame, 1)
 
-        frame = detector.findHands(frame)
-        RightHand = detector.RightHand(frame)  # False = Left Hand;   True = Right Hand
-        lmList = detector.findPosition(frame, draw=False)
-        # print(lmList)
+        frame = detector.find_hands(frame)
+        RightHand = detector.right_hand(frame)  # False = Left Hand;   True = Right Hand
+        lmList = detector.find_position(frame, draw=False)
 
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:

@@ -12,6 +12,7 @@ samples = 100
 start = False
 path = "GesturesFilesSigned/"
 
+
 def find_distances(lmList):
     # calculates, for each node, its signed distance along x and y with all the 21 nodes (with itself too and it's 0)
     dist_matrix_x = np.zeros([len(lmList), len(lmList)], dtype='float')
@@ -115,7 +116,7 @@ def store_gestures(_letter):
     img = None
 
     # prep detector + init unknownGestureSamples list
-    detector = htm.handDetector(detectionCon=1)
+    detector = htm.HandDetector()
     unknown_gesture_samples = []
 
     # flags
@@ -130,10 +131,9 @@ def store_gestures(_letter):
         success, frame = cap.read()
         frame = cv2.flip(frame, 1)
 
-        frame = detector.findHands(frame)
-        RightHand = detector.RightHand(frame)  # False = Left Hand;   True = Right Hand
-        lmList = detector.findPosition(frame, draw=False)
-        # print(lmList)
+        frame = detector.find_hands(frame)
+        RightHand = detector.right_hand(frame)  # False = Left Hand;   True = Right Hand
+        lmList = detector.find_position(frame, draw=False)
 
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:

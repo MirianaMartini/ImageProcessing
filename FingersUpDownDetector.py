@@ -1,8 +1,5 @@
 import cv2
 import time
-import numpy as np
-import os
-import json
 import HandTrackingModule as htm
 import matplotlib.pyplot as plt
 
