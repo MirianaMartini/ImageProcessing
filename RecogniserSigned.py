@@ -184,7 +184,7 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
     return img, pTime
 
 
-def main():
+def recogniser_signed():
     pTime = 0
 
     # init the camera
@@ -229,6 +229,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        recogniser_signed()
     except KeyboardInterrupt:
         exit(0)

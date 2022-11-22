@@ -96,7 +96,7 @@ def start_c():
         start_c()
 
 
-def store_gestures(_letter):
+def store_gestures_signed(_letter):
     pTime = 0
 
     mpl.use('TkAgg')
@@ -177,6 +177,6 @@ if __name__ == "__main__":
     try:
         prompt = 'Which Letter? --> '
         letter = input(prompt)
-        store_gestures(letter)
+        store_gestures_signed(letter)
     except KeyboardInterrupt:
         exit(0)
