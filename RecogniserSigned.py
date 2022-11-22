@@ -10,7 +10,8 @@ import matplotlib as mpl
 
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
-tol = 130
+tol = 20
+tolIKOP = 35
 
 
 def find_distances(lmList):
@@ -28,7 +29,7 @@ def find_distances(lmList):
     return distMatrix
 
 
-def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+def find_gesture_2(unknownGesture, knownGestures, keyPoints, gestNames, tol):
     # unknown gesture: gesture detected from webcam
     # knownGestures: array of all the gesture for each letter
     # keyPoints: all the key id of the hand
@@ -54,6 +55,41 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
         gesture = gestNames[minIndex]
     if errorMin[0] >= tol and errorMin[1] >= tol:
         gesture = 'Unknown'
+    return gesture
+
+
+def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+    # unknown gesture: gesture detected from webcam
+    # knownGestures: array of all the gesture for each letter
+    # keyPoints: all the key id of the hand
+    # gestNames: array of all the Letters Names
+    # tol: constant for error
+    # tolIKOP: constant for error for letters I, K, O, P
+    gesture = 'Unknown'
+
+    errorArray = []
+    # For each gestName he finds the error between the gesture related to that Name and
+    # the real time detected gesture
+    for i in range(0, len(gestNames), 1):
+        error = find_error(knownGestures[i], unknownGesture, keyPoints)
+        errorArray.append(error)
+    errorMin = errorArray[0]
+    minIndex = 0
+
+    # finds the min in error array
+    for i in range(0, len(errorArray), 1):
+        if errorArray[i] < errorMin:
+            errorMin = errorArray[i]
+            minIndex = i
+    if errorMin[0] < tolIKOP and errorMin[1] < tolIKOP:
+        if gestNames[minIndex] == 'I' or gestNames[minIndex] == 'K' or gestNames[minIndex] == 'O' \
+                or gestNames[minIndex] == 'P':
+            gesture = gestNames[minIndex]
+            # print(gestNames[minIndex])
+        elif errorMin[0] < tol and errorMin[1] < tol:
+            gesture = gestNames[minIndex]
+        elif errorMin[0] >= tol and errorMin[1] >= tol:
+            gesture = 'Unknown'
     return gesture
 
 

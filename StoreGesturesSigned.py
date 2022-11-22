@@ -36,7 +36,7 @@ def calculate_average(samplesList):
             sumX = np.add(sumX, samplesList[i][0])
             sumY = np.add(sumY, samplesList[i][1])
         avgX = sumX/len(samplesList)
-        avgY = sumX / len(samplesList)
+        avgY = sumY/len(samplesList)
 
         avg = [avgX, avgY]
         return avg
