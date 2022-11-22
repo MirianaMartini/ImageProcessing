@@ -4,7 +4,6 @@ import numpy as np
 from threading import Thread
 import HandTrackingModule as htm
 import json
-import os
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
