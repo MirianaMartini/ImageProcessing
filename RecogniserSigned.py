@@ -11,7 +11,7 @@ import matplotlib as mpl
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 tol = 25
-tolIKOP = 40
+tol_max = 40
 
 
 def find_distances(lmList):
@@ -81,9 +81,10 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
         if errorArray[i] < errorMin:
             errorMin = errorArray[i]
             minIndex = i
-    if errorMin[0] < tolIKOP and errorMin[1] < tolIKOP:
+    if errorMin[0] < tol_max and errorMin[1] < tol_max:
         if gestNames[minIndex] == 'I' or gestNames[minIndex] == 'K' or gestNames[minIndex] == 'O' \
-                or gestNames[minIndex] == 'P':
+                or gestNames[minIndex] == 'P' or gestNames[minIndex] == 'S' or gestNames[minIndex] == 'C_CIRCONFLESSO' \
+                or gestNames[minIndex] == 'D' or gestNames[minIndex] == 'G':
             gesture = gestNames[minIndex]
             # print(gestNames[minIndex])
         elif errorMin[0] < tol and errorMin[1] < tol:
