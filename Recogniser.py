@@ -12,7 +12,7 @@ tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 #keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
 tol = 20
-tolMN = 35
+tol_max = 35
 
 
 def find_distances(lmList): # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
@@ -46,10 +46,16 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
         if errorArray[i] < errorMin:
             errorMin = errorArray[i]
             minIndex = i
-    if errorMin < tol:
-        gesture = gestNames[minIndex]
-    if errorMin >= tol:
-        gesture = 'Unknown'
+
+    if errorMin < tol_max:
+        if gestNames[minIndex] == 'I' or gestNames[minIndex] == 'S':
+            gesture = gestNames[minIndex]
+            # print(gestNames[minIndex])
+        elif errorMin < tol:
+            gesture = gestNames[minIndex]
+        elif errorMin >= tol:
+            gesture = 'Unknown'
+
     return gesture
 
 
