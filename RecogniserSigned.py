@@ -10,8 +10,8 @@ import matplotlib as mpl
 
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
-tol = 20
-tolIKOP = 35
+tol = 25
+tolIKOP = 40
 
 
 def find_distances(lmList):
