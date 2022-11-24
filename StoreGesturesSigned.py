@@ -137,7 +137,7 @@ def store_gestures_signed(_letter):
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
+                    cv2.putText(frame, 'Storing ' + _letter.upper(), (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
                                 3, cv2.LINE_AA)
                     unknown_gesture_sample = find_distances(lmList)  # save the sample
                     unknown_gesture_samples.append(unknown_gesture_sample)  # add the sample to the list of samples
@@ -160,7 +160,7 @@ def store_gestures_signed(_letter):
             # convert it in RBG (for Matplotlib)
             img = plt.imshow(bgr_to_rgb(frame))
             plt.axis("off")  # hide axis, ticks, ...
-            plt.title("Store Gestures")
+            plt.title("Store Gestures Signed")
             # show the plot!
             plt.show()
         else:

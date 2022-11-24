@@ -89,8 +89,8 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames):
         elif errorMin[0] < tol_max and errorMin[1] < tol_max:
             if gestNames[minIndex] == 'K' or gestNames[minIndex] == 'O' or gestNames[minIndex] == 'P' \
                     or gestNames[minIndex] == 'C_CIRCONFLESSO' \
-                    or gestNames[minIndex] == 'G' or gestNames[minIndex] == 'M' \
-                    or gestNames[minIndex] == 'N' or gestNames[minIndex] == 'E':
+                    or gestNames[minIndex] == 'G' or gestNames[minIndex] == 'M' or gestNames[minIndex] == 'T' \
+                    or gestNames[minIndex] == 'N' or gestNames[minIndex] == 'E' or gestNames[minIndex] == 'Q':
                 gesture = gestNames[minIndex]
                 # print(gestNames[minIndex])
             elif errorMin[0] < tol and errorMin[1] < tol:
@@ -178,8 +178,8 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
             text = myGesture
             # cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
             # cv2.putText(img, text, (45, 375), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
-            cv2.putText(img, text, (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
-            cv2.putText(img, fingers_names, (0, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
+            cv2.putText(img, text, (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
+            cv2.putText(img, fingers_names, (2, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
         else:
             cv2.putText(img, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2, cv2.LINE_AA)
 

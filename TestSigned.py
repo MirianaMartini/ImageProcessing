@@ -131,26 +131,31 @@ def test(_letter):
         lmList = detector.find_position(frame, draw=False)
 
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
-            if start is True:
-                if i < samples:
-                    orientation = detector.orientation()
-                    if orientation is True:
-                        cv2.putText(frame, 'Testing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5,
+            orientation = detector.orientation()
+            if orientation is True:
+                unknown_gesture_sample = Recogniser.find_distances(lmList)  # save the sample
+                global known_gestures, gest_names
+                myGesture = Recogniser.find_gesture(unknown_gesture_sample, known_gestures, Recogniser.keyPoints,
+                                                    gest_names)
+                cv2.putText(frame, myGesture, (2, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 190, 1), 3, cv2.LINE_AA)
+
+                if start is True:
+                    if i < samples:
+                        cv2.putText(frame, 'Testing ' + _letter.upper(), (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5,
                                     (0, 0, 125), 3, cv2.LINE_AA)
-                        unknown_gesture_sample = Recogniser.find_distances(lmList)  # save the sample
-                        global known_gestures, gest_names
-                        myGesture = Recogniser.find_gesture(unknown_gesture_sample, known_gestures, Recogniser.keyPoints, gest_names)
-                        cv2.putText(frame, myGesture, (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 190, 1), 3, cv2.LINE_AA)
                         if myGesture == _letter:
                             true_positive += 1
                         i = i + 1
                     else:
-                        cv2.putText(frame, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
-                                    2, cv2.LINE_AA)
+                        print("Correct Guess: {}/{}".format(true_positive, samples))
+                        save_in_file(test_path, _letter, true_positive)
+                        return
                 else:
-                    print("Correct Guess: {}/{}".format(true_positive, samples))
-                    save_in_file(test_path, _letter, true_positive)
-                    return
+                    cv2.putText(frame, 'Press S to start Testing', (2, 45), cv2.FONT_HERSHEY_SIMPLEX, 1.4, (0, 0, 125),
+                                3, cv2.LINE_AA)
+            else:
+                cv2.putText(frame, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
+                            cv2.LINE_AA)
 
         elif RightHand is True:
             cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125), 2,
