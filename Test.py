@@ -1,56 +1,53 @@
 import cv2
-import time
-import numpy as np
 from threading import Thread
 import HandTrackingModule as htm
-import json
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import Recogniser
+
+test_path = "Test/TestRoberta.txt"
 
 samples = 100
+known_gestures = []
+gest_names = []
 start = False
-path = "GesturesFiles/"
 
 
-def find_distances(lmList):
-    # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
-    distMatrix = np.zeros([len(lmList), len(lmList)], dtype='float')
-    palmSize = ((lmList[0][1] - lmList[9][1]) ** 2 + (lmList[0][2] - lmList[9][2]) ** 2) ** (1. / 2.)
-    for row in range(0, len(lmList)):
-        for column in range(0, len(lmList)):
-            distMatrix[row][column] = (((lmList[row][1] - lmList[column][1]) ** 2 +
-                                        (lmList[row][2] - lmList[column][2]) ** 2) ** (1. / 2.)) / palmSize
-    return distMatrix
+def update_file(path, lines):
+    with open(path, "w") as f:
+        for line in lines:
+            f.write("{}".format(line))
+        f.close()
 
 
-def calculate_average(samplesList):
-    if len(samplesList) > 0:
-        sumG = samplesList[0]
-        for i in range(1, len(samplesList)):
-            sumG = np.add(sumG, samplesList[i])
-        avg = sumG/len(samplesList)
-        return avg
-    else:
-        return -1
+def save_in_file(path, _letter, value):
+    flag = True
+    lines = []
 
+    try:
+        with open(path, "r+") as f:
+            i = 0
 
-def save_in_file(letterGestureAVG, letterName):
-    print('Saving in json')
+            lines = f.readlines()
+            f.close()
 
-    # Serializing json
-    json_object = json.dumps(letterGestureAVG.tolist())
+            for line in lines:
+                x = line.split(':')
+                if x[0] == _letter:
+                    new_line = "{}: {}/{}\n".format(_letter, value, samples)
+                    lines[i] = new_line
+                    flag = False
+                i += 1
+        if flag:
+            new_line = "{}: {}/{}\n".format(_letter, value, samples)
+            lines.append(new_line)
 
-    # Writing to sample.json
-    with open(path + letterName.upper() + ".json", "w+") as outfile:
-        outfile.write(json_object)
-        outfile.close()
+        update_file(path, lines)
 
-
-def fps_show(img, pTime):
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
-    return cTime
+    except IOError:
+        new_line = "{}: {}/{}\n".format(_letter, value, samples)
+        lines.append(new_line)
+        update_file(path, lines)
 
 
 def bgr_to_rgb(image):
@@ -81,7 +78,16 @@ def start_c():
         start_c()
 
 
-def store_gestures(_letter):
+def exist(_letter):
+    global known_gestures, gest_names
+    gest_names, known_gestures = Recogniser.get_known_gestures(Recogniser.path_m)
+    for name in gest_names:
+        if name == _letter:
+            return True
+    return False
+
+
+def test(_letter):
     pTime = 0
 
     mpl.use('TkAgg')
@@ -95,6 +101,7 @@ def store_gestures(_letter):
     mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
+
     # intercept the window's close event to call the handle_close() function
     fig.canvas.mpl_connect("close_event", lambda event: handle_close(event, cap))
 
@@ -113,6 +120,8 @@ def store_gestures(_letter):
     t = Thread(target=start_c)
     t.start()
 
+    true_positive = 0
+
     while cap.isOpened():
         success, frame = cap.read()
         frame = cv2.flip(frame, 1)
@@ -124,18 +133,24 @@ def store_gestures(_letter):
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(frame, 'Storing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125),
-                                3, cv2.LINE_AA)
-                    unknown_gesture_sample = find_distances(lmList)  # save the sample
-                    unknown_gesture_samples.append(unknown_gesture_sample)  # add the sample to the list of samples
-                    i = i + 1
-                else:
-                    if averageFlag is True:
-                        res = calculate_average(unknown_gesture_samples)  # calculate the average
-                        save_in_file(res, letter)  # save the result into a file
-                        averageFlag = False
+                    orientation = detector.orientation()
+                    if orientation is True:
+                        cv2.putText(frame, 'Testing ' + _letter.upper(), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5,
+                                    (0, 0, 125), 3, cv2.LINE_AA)
+                        unknown_gesture_sample = Recogniser.find_distances(lmList)  # save the sample
+                        global known_gestures, gest_names
+                        myGesture = Recogniser.find_gesture(unknown_gesture_sample, known_gestures, Recogniser.keyPoints, gest_names)
+                        cv2.putText(frame, myGesture, (0, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 190, 1), 3, cv2.LINE_AA)
+                        if myGesture == _letter:
+                            true_positive += 1
+                        i = i + 1
                     else:
-                        return
+                        cv2.putText(frame, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
+                                    2, cv2.LINE_AA)
+                else:
+                    print("Correct Guess: {}/{}".format(true_positive, samples))
+                    save_in_file(test_path, _letter, true_positive)
+                    return
 
         elif RightHand is True:
             cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125), 2,
@@ -147,7 +162,7 @@ def store_gestures(_letter):
             # convert it in RBG (for Matplotlib)
             img = plt.imshow(bgr_to_rgb(frame))
             plt.axis("off")  # hide axis, ticks, ...
-            plt.title("Store Gestures Signed")
+            plt.title("Test")
             # show the plot!
             plt.show()
         else:
@@ -160,9 +175,15 @@ def store_gestures(_letter):
 
 
 if __name__ == "__main__":
+    ok = True
     try:
-        prompt = 'Which Letter? --> '
-        letter = input(prompt)
-        store_gestures(letter)
+        while ok:
+            prompt = 'Indicate the Letter to be tested! --> '
+            letter = input(prompt)
+            if exist(letter.upper()):
+                test(letter.upper())
+                ok = False
+            else:
+                ok = True
     except KeyboardInterrupt:
         exit(0)

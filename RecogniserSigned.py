@@ -13,6 +13,7 @@ keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 tol = 25
 tol_max = 40
 tol_I = 50
+path_m = "GesturesFilesSigned/"
 
 
 def find_distances(lmList):
@@ -30,7 +31,7 @@ def find_distances(lmList):
     return distMatrix
 
 
-def find_gesture_2(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+def find_gesture_2(unknownGesture, knownGestures, keyPoints, gestNames):
     # unknown gesture: gesture detected from webcam
     # knownGestures: array of all the gesture for each letter
     # keyPoints: all the key id of the hand
@@ -59,7 +60,7 @@ def find_gesture_2(unknownGesture, knownGestures, keyPoints, gestNames, tol):
     return gesture
 
 
-def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames):
     # unknown gesture: gesture detected from webcam
     # knownGestures: array of all the gesture for each letter
     # keyPoints: all the key id of the hand
@@ -89,7 +90,7 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
             if gestNames[minIndex] == 'K' or gestNames[minIndex] == 'O' or gestNames[minIndex] == 'P' \
                     or gestNames[minIndex] == 'C_CIRCONFLESSO' \
                     or gestNames[minIndex] == 'G' or gestNames[minIndex] == 'M' \
-                    or gestNames[minIndex] == 'N':
+                    or gestNames[minIndex] == 'N' or gestNames[minIndex] == 'E':
                 gesture = gestNames[minIndex]
                 # print(gestNames[minIndex])
             elif errorMin[0] < tol and errorMin[1] < tol:
@@ -170,7 +171,7 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
 
     if len(lmList) != 0 and RightHand is False:  # if a hand is detected
         unknownGesture = find_distances(lmList)
-        myGesture = find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol)
+        myGesture = find_gesture(unknownGesture, knownGestures, keyPoints, gestNames)
         fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
         orientation = detector.orientation()
         if orientation is True:
@@ -202,6 +203,7 @@ def recogniser_signed():
     mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
+
     # intercept the window's close event to call the handle_close() function
     fig.canvas.mpl_connect("close_event", lambda event: handle_close(event, cap))
 
@@ -210,7 +212,7 @@ def recogniser_signed():
 
     # prep detector + load known gestures
     detector = htm.HandDetector()
-    gestNames, knownGestures = get_known_gestures("GesturesFilesSigned/")
+    gestNames, knownGestures = get_known_gestures(path_m)
 
     while cap.isOpened():
         # get the current frame
@@ -221,7 +223,7 @@ def recogniser_signed():
             # convert it in RBG (for Matplotlib)
             img = plt.imshow(bgr_to_rgb(frame))
             plt.axis("off")  # hide axis, ticks, ...
-            plt.title("Recogniser")
+            plt.title("Recogniser Signed")
             # show the plot!
             plt.show()
         else:

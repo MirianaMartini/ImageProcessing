@@ -13,6 +13,7 @@ keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
 #keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
 tol = 20
 tol_max = 35
+path_m = "GesturesFiles/"
 
 
 def find_distances(lmList): # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
@@ -24,7 +25,7 @@ def find_distances(lmList): # calculates, for each node, its distance with all t
     return distMatrix
 
 
-def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol):
+def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames):
     # unknown gesture: gesture detected from webcam
     # knownGestures: array of all the gesture for each letter
     # keyPoints: all the key id of the hand
@@ -125,7 +126,7 @@ def grab_frame(cap, detector, gestNames, knownGestures, pTime):
 
     if len(lmList) != 0 and RightHand is False:  # if a hand is detected
         unknownGesture = find_distances(lmList)
-        myGesture = find_gesture(unknownGesture, knownGestures, keyPoints, gestNames, tol)
+        myGesture = find_gesture(unknownGesture, knownGestures, keyPoints, gestNames)
         fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
         orientation = detector.orientation()
         if orientation is True:
@@ -157,6 +158,7 @@ def recogniser():
     mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
+
     # intercept the window's close event to call the handle_close() function
     fig.canvas.mpl_connect("close_event", lambda event: handle_close(event, cap))
 
@@ -165,7 +167,7 @@ def recogniser():
 
     # prep detector + load known gestures
     detector = htm.HandDetector()
-    gestNames, knownGestures = get_known_gestures("GesturesFiles/")
+    gestNames, knownGestures = get_known_gestures(path_m)
 
     while cap.isOpened():
         # get the current frame
