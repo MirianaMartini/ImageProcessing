@@ -49,7 +49,7 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames):
             minIndex = i
 
     if errorMin < tol_max:
-        if gestNames[minIndex] == 'I' or gestNames[minIndex] == 'S':
+        if gestNames[minIndex] == 'I' or gestNames[minIndex] == 'S' or gestNames[minIndex] == 'W':
             gesture = gestNames[minIndex]
             # print(gestNames[minIndex])
         elif errorMin < tol:
