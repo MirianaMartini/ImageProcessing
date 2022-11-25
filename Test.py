@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import Recogniser
 
-test_path = "Test/TestRoberta.txt"
+#test_path = "Test/TestRoberta.txt"
+test_path = "Test/TestMiriana.txt"
 
 samples = 100
 known_gestures = []
