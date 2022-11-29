@@ -90,7 +90,7 @@ def find_gesture(unknownGesture, knownGestures, keyPoints, gestNames):
             if gestNames[minIndex] == 'K' or gestNames[minIndex] == 'O' or gestNames[minIndex] == 'P' \
                     or gestNames[minIndex] == 'C_CIRCONFLESSO' \
                     or gestNames[minIndex] == 'G' or gestNames[minIndex] == 'M' or gestNames[minIndex] == 'T' \
-                    or gestNames[minIndex] == 'N' or gestNames[minIndex] == 'E' or gestNames[minIndex] == 'Q':
+                    or gestNames[minIndex] == 'N' or gestNames[minIndex] == 'Q' or gestNames[minIndex] == 'E':
                 gesture = gestNames[minIndex]
                 # print(gestNames[minIndex])
             elif errorMin[0] < tol and errorMin[1] < tol:
