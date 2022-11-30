@@ -1,6 +1,6 @@
 
 """
-Eseguire lo script per ogni path
+Exec the script for each path
 """
 
 path = "Test/TestRoberta.txt"
