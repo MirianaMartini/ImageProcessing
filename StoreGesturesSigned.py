@@ -1,5 +1,4 @@
 import cv2
-import time
 import numpy as np
 from threading import Thread
 import HandTrackingModule as htm
@@ -13,7 +12,11 @@ path = "GesturesFilesSigned/"
 
 
 def find_distances(lmList):
-    # calculates, for each node, its signed distance along x and y with all the 21 nodes (with itself too and it's 0)
+    """
+    Calculates, for each node, its signed distance along x and y with all the 21 nodes (with itself too and it's 0)
+    :param lmList: matrix of coordinates for each node
+    :return: matrix of tuples 21x21 (each tuple contains the distance along x and along y with sign for the verse)
+    """
     dist_matrix_x = np.zeros([len(lmList), len(lmList)], dtype='float')
     dist_matrix_y = np.zeros([len(lmList), len(lmList)], dtype='float')
     palmSize = ((lmList[0][1] - lmList[9][1]) ** 2 + (lmList[0][2] - lmList[9][2]) ** 2) ** (1. / 2.)
@@ -28,6 +31,11 @@ def find_distances(lmList):
 
 
 def calculate_average(samplesList):
+    """
+    Calculates the average of the samples detected in "samples" number of detections
+    :param samplesList: list of samples, for each sample a 21x21 matrix of tuples (avgX, avgY)
+    :return: the matrix of tuples resulted from the avg operation
+    """
     if len(samplesList) > 0:
         sumX = samplesList[0][0]
         sumY = samplesList[0][1]
@@ -44,6 +52,12 @@ def calculate_average(samplesList):
 
 
 def save_in_file(letterGestureAVG, letterName):
+    """
+    Saves in a file the result of the avg operation for a specific letter given from letterName
+    :param letterGestureAVG: a 21x21 matrix of tuples resulted from the avg operation
+    :param letterName: the name of the letter we are storing
+    :return: None
+    """
     print('Saving in json')
 
     # Serializing json
@@ -60,16 +74,9 @@ def save_in_file(letterGestureAVG, letterName):
         outfile.close()
 
 
-def fps_show(img, pTime):
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
-    return cTime
-
-
 def bgr_to_rgb(image):
     """
-    Convert a BGR image into RBG
+    Converts a BGR image into RBG
     :param image: the BGR image
     :return: the same image but in RGB
     """
@@ -78,7 +85,7 @@ def bgr_to_rgb(image):
 
 def handle_close(event, cap):
     """
-    Handle the close event of the Matplotlib window by closing the camera capture
+    Handles the close event of the Matplotlib window by closing the camera capture
     :param event: the close event
     :param cap: the VideoCapture object to be closed
     """
@@ -86,6 +93,9 @@ def handle_close(event, cap):
 
 
 def start_c():
+    """
+    Thread that asks the user to insert S to start the storing
+    """
     prompt = 'Press S when Ready --> '
     name = input(prompt)
     if name == 's' or name == 'S':
@@ -96,8 +106,9 @@ def start_c():
 
 
 def store_gestures_signed(_letter):
-    pTime = 0
-
+    """
+    Method to store data linked to a specific gesture
+    """
     mpl.use('TkAgg')
 
     # init the camera
@@ -108,6 +119,7 @@ def store_gestures_signed(_letter):
 
     # create a figure to be updated
     fig = plt.figure()
+
     # intercept the window's close event to call the handle_close() function
     fig.canvas.mpl_connect("close_event", lambda event: handle_close(event, cap))
 
@@ -137,8 +149,8 @@ def store_gestures_signed(_letter):
         if len(lmList) != 0 and RightHand is False:  # if a only left hand is detected
             if start is True:
                 if i < samples:
-                    cv2.putText(frame, 'Storing ' + _letter.upper(), (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125),
-                                3, cv2.LINE_AA)
+                    cv2.putText(frame, 'Storing ' + _letter.upper(), (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5,
+                                (0, 0, 125), 3, cv2.LINE_AA)
                     unknown_gesture_sample = find_distances(lmList)  # save the sample
                     unknown_gesture_samples.append(unknown_gesture_sample)  # add the sample to the list of samples
                     i = i + 1
@@ -154,18 +166,18 @@ def store_gestures_signed(_letter):
             cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
                         cv2.LINE_AA)
 
-        # frame, pTime = fps_show(frame, pTime)  # Show fps number
-
         if img is None:
             # convert it in RBG (for Matplotlib)
             img = plt.imshow(bgr_to_rgb(frame))
             plt.axis("off")  # hide axis, ticks, ...
             plt.title("Store Gestures Signed")
+
             # show the plot!
             plt.show()
         else:
             # set the current frame as the data to show
             img.set_data(bgr_to_rgb(frame))
+
             # update the figure associated to the shown plot
             fig.canvas.draw()
             fig.canvas.flush_events()

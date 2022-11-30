@@ -125,6 +125,7 @@ def main():
             fig.canvas.flush_events()
             plt.pause(1 / 30)
 
+
 if __name__ == "__main__":
     try:
         main()

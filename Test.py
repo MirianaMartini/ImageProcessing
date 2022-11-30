@@ -89,8 +89,6 @@ def exist(_letter):
 
 
 def test(_letter):
-    pTime = 0
-
     mpl.use('TkAgg')
 
     # init the camera
@@ -99,7 +97,6 @@ def test(_letter):
     # enable Matplotlib interactive mode
     plt.ion()
 
-    mpl.use('TkAgg')
     # create a figure to be updated
     fig = plt.figure()
 
@@ -109,13 +106,11 @@ def test(_letter):
     # prep a variable for the first run
     img = None
 
-    # prep detector + init unknownGestureSamples list
+    # prep detector
     detector = htm.HandDetector()
-    unknown_gesture_samples = []
 
     # flags
     i = 0
-    averageFlag = True
 
     # Throw a thread that controls the start of the calculating
     t = Thread(target=start_c)
@@ -136,8 +131,7 @@ def test(_letter):
             if orientation is True:
                 unknown_gesture_sample = Recogniser.find_distances(lmList)  # save the sample
                 global known_gestures, gest_names
-                myGesture = Recogniser.find_gesture(unknown_gesture_sample, known_gestures, Recogniser.keyPoints,
-                                                    gest_names)
+                myGesture = Recogniser.find_gesture(unknown_gesture_sample, known_gestures, gest_names)
 
                 cv2.putText(frame, myGesture, (2, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 190, 1), 3, cv2.LINE_AA)
 
@@ -163,18 +157,18 @@ def test(_letter):
             cv2.putText(frame, "Remove your Right Hand", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 125), 2,
                         cv2.LINE_AA)
 
-        # frame, pTime = fps_show(frame, pTime)  # Show fps number
-
         if img is None:
             # convert it in RBG (for Matplotlib)
             img = plt.imshow(bgr_to_rgb(frame))
             plt.axis("off")  # hide axis, ticks, ...
             plt.title("Test")
+
             # show the plot!
             plt.show()
         else:
             # set the current frame as the data to show
             img.set_data(bgr_to_rgb(frame))
+
             # update the figure associated to the shown plot
             fig.canvas.draw()
             fig.canvas.flush_events()
