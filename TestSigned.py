@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import RecogniserSigned as Recogniser
 
-test_path = "TestSigned/TestRoberta.txt"
-#test_path = "TestSigned/TestMiriana.txt"
+#test_path = "TestSigned/TestRoberta.txt"
+test_path = "TestSigned/TestMiriana.txt"
 
 samples = 100
 known_gestures = []
