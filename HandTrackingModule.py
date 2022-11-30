@@ -53,6 +53,7 @@ class HandDetector:
                     cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED)
         return lmList
 
+    """
     def get_coordinates(self):
         hands = []
         if self.results.multi_handedness:  # se ha trovato una mano
@@ -62,6 +63,7 @@ class HandDetector:
             return hands[0]
         else:
             return 0
+    """
 
     def orientation(self):
         if self.results.multi_handedness:  # se ha trovato una mano
@@ -78,15 +80,4 @@ class HandDetector:
                         flag = False
                 else:
                     flag = False
-                """"
-                elif hand.landmark[0].y < hand.landmark[1].y and hand.landmark[0].y < hand.landmark[17].y:
-                    flag = False
-                    print("mano rivolta verso il basso")
-                elif hand.landmark[17].y < hand.landmark[0].y and hand.landmark[1].y > hand.landmark[0].y:
-                    flag = False
-                    print("mano rivolta verso destra")
-                elif hand.landmark[17].y > hand.landmark[0].y and hand.landmark[1].y < hand.landmark[0].y:
-                    flag = False
-                    print("mano rivolta verso sinistra")
-                """
             return flag

@@ -10,7 +10,6 @@ import matplotlib as mpl
 
 tipIds = [4, 8, 12, 16, 20]
 keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20, 2, 6, 10, 14, 18]
-#keyPoints = [0, 4, 5, 9, 13, 17, 8, 12, 16, 20]
 tol = 20
 tol_max = 35
 path_m = "GesturesFiles/"
@@ -66,13 +65,6 @@ def find_error(gestureMatrix, unknownMatrix, keyPoints):
         for column in keyPoints:
             error = error + abs(gestureMatrix[row][column] - unknownMatrix[row][column])
     return error
-
-
-def fps_show(img, pTime):
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
-    return img, cTime
 
 
 def get_letter(fileName):

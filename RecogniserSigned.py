@@ -113,13 +113,6 @@ def find_error(gestureMatrix, unknownMatrix, keyPoints):
     return error
 
 
-def fps_show(img, pTime):
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    cv2.putText(img, f'FPS: {int(fps)}', (500, 450), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
-    return img, cTime
-
-
 def get_letter(fileName):
     x = fileName.split('.')
     return x[0]
