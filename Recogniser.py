@@ -13,7 +13,7 @@ tol_max = 35
 path_m = "GesturesFiles/"
 
 
-def find_distances(lmList): # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
+def find_distances(lmList):  # calculates, for each node, its distance with all the 21 nodes (with itself too and it's 0)
     """
     Calculates all the distances between all the 21 nodes
     :param lmList: matrix of coordinates for each node
@@ -23,7 +23,8 @@ def find_distances(lmList): # calculates, for each node, its distance with all t
     palmSize = ((lmList[0][1]-lmList[9][1])**2+(lmList[0][2]-lmList[9][2])**2)**(1./2.)
     for row in range(0, len(lmList)):
         for column in range(0, len(lmList)):
-            distMatrix[row][column] = (((lmList[row][1]-lmList[column][1])**2+(lmList[row][2]-lmList[column][2])**2)**(1./2.))/palmSize
+            distMatrix[row][column] = (((lmList[row][1]-lmList[column][1])**2 +
+                                        (lmList[row][2]-lmList[column][2])**2)**(1./2.))/palmSize
     return distMatrix
 
 

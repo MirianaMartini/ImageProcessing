@@ -66,7 +66,7 @@ class HandDetector:
     """
 
     def orientation(self):
-        if self.results.multi_handedness:  # se ha trovato una mano
+        if self.results.multi_handedness:  # if a hand has been found
             flag = False
             for hand in self.results.multi_hand_landmarks:
                 cos_right = (hand.landmark[17].x-hand.landmark[0].x)**2/((hand.landmark[17].x-hand.landmark[0].x)**2
