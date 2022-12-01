@@ -19,10 +19,10 @@ class HandDetector:
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
 
-        if self.results.multi_hand_landmarks: #se ha trovato una mano
+        if self.results.multi_hand_landmarks:
             for handLms in self.results.multi_hand_landmarks:
                 for idx, classification in enumerate(self.results.multi_handedness):
-                    if classification.classification[0].label == 'Left': #Se ha individuato la mano Sinistra
+                    if classification.classification[0].label == 'Left':
                         self.mp_draw.draw_landmarks(img, handLms, self.mp_hands.HAND_CONNECTIONS)
         return img
 
