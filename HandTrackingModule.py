@@ -33,7 +33,7 @@ class HandDetector:
 
         if self.results.multi_handedness:  # se ha trovato una mano
             for idx, classification in enumerate(self.results.multi_handedness):
-                if classification.classification[0].label == 'Right':  # Mando Destra --> errore
+                if classification.classification[0].label == 'Right':  # Mano Destra --> errore
                     error = True
                 if classification.classification[0].label == 'Left':  # Mano Sinistra --> ok
                     error = False

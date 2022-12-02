@@ -27,11 +27,6 @@ def find_distances(lmList):
 
 
 def calculate_average(samplesList):
-    """
-    Calculates the average of the samples detected in "samples" number of detections
-    :param samplesList: list of samples, for each sample a matrix of distances 21x21
-    :return: the matrix of distances resulted from the avg operation
-    """
     if len(samplesList) > 0:
         sumG = samplesList[0]
         for i in range(1, len(samplesList)):
