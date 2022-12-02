@@ -157,12 +157,12 @@ def grab_frame(cap, detector, gestNames, knownGestures):
     if len(lmList) != 0 and RightHand is False:  # if a hand is detected
         unknownGesture = find_distances(lmList)
         myGesture = find_gesture(unknownGesture, knownGestures, gestNames)
-        #fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
+        # fingers_up, fingers_names = fUDd.find_fingers_up(lmList)
         orientation = detector.orientation()
         if orientation is True:
             text = myGesture
             cv2.putText(img, text, (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 125), 3, cv2.LINE_AA)
-            #cv2.putText(img, fingers_names, (2, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
+            # cv2.putText(img, fingers_names, (2, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (30, 144, 255), 2, cv2.LINE_AA)
         else:
             cv2.putText(img, "Place your hand correctly", (2, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 125), 2,
                         cv2.LINE_AA)
